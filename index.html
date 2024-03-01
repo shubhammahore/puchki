@@ -1,78 +1,122 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Puchki🥰😘 and Me Play</title>
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puchki🥰😘 and Me Playing Button Games</title>
+  <style>
     body {
-        margin: 5% 20% 30% 5%;/* Top, Right, Bottom, Left margins in percentage */
-        padding:  5% 20% 30% 5%;
-        background-size: cover;
-        background-position: center;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .container {
+      height: 600px;
+      width: 900px;
+      border: 0px solid #babbbe;
+      padding: 20px;
+      text-align: justify;
+      position: relative;
     }
 
     #changeButton {
-        margin: 5% 20% 30% 5%;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      position: absolute;
     }
-</style>
+  </style>
 </head>
+
 <body>
+  <div class="container">
+    <button id="changeButton">Hey Puchki🥰😘 Click Me!</button>
+  </div>
 
-<button id="changeButton">Hey Puchki🥰😘 Click Me!!</button>
-
-<script>
-    const buttonTexts = ["Phir se Click kro 🫵","Puchki 🥰😘 ho tum",
-    "Tum 😎 Dramabaaz ho 🫵", "Pata hai tum bahut gussa wali ho",
-    "Pata hai Tum na Pagal ho😁","Tum bahut alag ho", "Tumko gussa jaldi aata hai",
-    "Tum Bahut achchhi ho", "Tumko tang krne pe maza aata hai 😉"];
-    const colors = [
-        "#007bff",
-        "#dc3545",
-        "#28a745",
-        "#ffc107",
-        "#17a2b8",
-        "#ff5733",
-        "#4caf50",
-        "#ff9800",
-        "#673ab7",
+  <script>
+    const buttonTexts = [
+      "Hey Puchki🥰😘 Click Me!",
+      "Rimi, your smile is as radiant as sunshine and has the power to brighten anyone's day. 😊☀️",
+      "Your kindness and compassion make you a truly beautiful person, Rimi. 🌸💖",
+      "Rimi, your intelligence and quick wit always leave me impressed. 🧠✨",
+      "Your sense of style is impeccable, Rimi. You have a unique and captivating fashion sense. 👗🌟",
+      "Rimi, you have a heart of gold, and your generosity knows no bounds. 💛🌈",
+      "Your positive energy is contagious, Rimi. Being around you is always uplifting. 🌟😄",
+      "Rimi, your determination and resilience are truly admirable. You can conquer anything you set your mind to. 💪🌟",
+      "Your creativity knows no limits, Rimi. Your artistic talents are simply amazing. 🎨🌟",
+      "Rimi, your presence in a room brings joy and warmth. You have a special way of making people feel comfortable. 🌼😊",
+      "Your genuine and sincere nature is what makes you stand out, Rimi. You're a true gem. 💎✨"
     ];
+    const colors = ["#007bff", "#dc3545", "#28a745", "#ffc107", "#17a2b8", "#ff5733", "#4caf50", "#ff9800", "#673ab7"];
     const button = document.getElementById("changeButton");
+    const body = document.body;
     let clickCount = 0;
 
-    button.addEventListener("click", function() {
-        clickCount++;
-        if (clickCount >= buttonTexts.length) {
-            clickCount = 0;
-        }
+    // Function to generate a random number between 1 and 1000
+    function getRandomImageId() {
+      return Math.floor(Math.random() * 1000) + 1;
+    }
 
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        // Calculate the maximum allowed values for randomX and randomY
-        const maxX = window.innerWidth - button.offsetWidth;
-        const maxY = window.innerHeight - button.offsetHeight;
+    // Cache object for preloaded images (using image IDs as keys)
+    const imageCache = {};
 
-        // Ensure randomX and randomY stay within the visible area
-        const randomX = Math.max(0, Math.min(maxX, Math.random() * window.innerWidth));
-        const randomY = Math.max(0, Math.min(maxY, Math.random() * window.innerHeight));
-        document.body.style.backgroundImage = `url('https://picsum.photos/200/301?${Math.random()}')`;
-        button.textContent = buttonTexts[clickCount];
-        button.style.backgroundColor = randomColor;
-        button.style.position = "absolute";
-        button.style.top = randomY + "px";
-        button.style.left = randomX + "px";
+    // Function to preload an image and add it to the cache
+    function preloadImage(imageId) {
+      if (!imageCache[imageId]) {
+        const imageUrl = `https://picsum.photos/id/${imageId}/400/600.jpg`;
+        const img = new Image();
+        img.src = imageUrl;
+        imageCache[imageId] = img;
+      }
+    }
+
+    // Initial preload of 2 unique images
+    for (let i = 0; i < 2; i++) {
+      const randomImageId = getRandomImageId();
+      preloadImage(randomImageId);
+    }
+
+    // Function to change button and body background
+    function changeBackground() {
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      const randomImageId = getRandomImageId();
+      const randomImageUrl = `https://picsum.photos/id/${randomImageId}/400/600.jpg`;
+      const maxX = button.parentElement.clientWidth - button.offsetWidth;
+      const maxY = button.parentElement.clientHeight - button.offsetHeight;
+
+      const randomX = Math.max(0, Math.min(maxX, Math.random() * maxX));
+      const randomY = Math.max(0, Math.min(maxY, Math.random() * maxY));
+
+      button.textContent = buttonTexts[clickCount];
+      button.style.backgroundColor = randomColor;
+      button.style.top = randomY + "px";
+      button.style.left = randomX + "px";
+
+      // Change the body background image
+      body.style.backgroundImage = `url('${randomImageUrl}')`;
+    }
+
+    // Initial change on page load
+    changeBackground();
+
+    button.addEventListener("click", function () {
+      clickCount = (clickCount + 1) % buttonTexts.length;
+
+      // Change button and body background on button click
+      changeBackground();
     });
-</script>
+  </script>
 
 </body>
+
 </html>
