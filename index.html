@@ -17,6 +17,11 @@
       background-position: center;
     }
 
+    body.loading {
+      background-image: url('loading-spinner.gif');
+      /* Add a loading spinner or placeholder image */
+    }
+
     .container {
       height: 600px;
       width: 900px;
@@ -38,59 +43,83 @@
   </style>
 </head>
 
-<body>
+<body class="loading">
   <div class="container">
-    <button id="changeButton">Hey Puchki🥰😘 Click Me!</button>
+    <button id="changeButton">Play with Buttons!-Demo</button>
   </div>
 
   <script>
     const buttonTexts = [
-      "Hey Puchki🥰😘 Click Me!",
-      "Rimi, your smile is as radiant as sunshine and has the power to brighten anyone's day. 😊☀️",
-      "Your kindness and compassion make you a truly beautiful person, Rimi. 🌸💖",
-      "Rimi, your intelligence and quick wit always leave me impressed. 🧠✨",
-      "Your sense of style is impeccable, Rimi. You have a unique and captivating fashion sense. 👗🌟",
-      "Rimi, you have a heart of gold, and your generosity knows no bounds. 💛🌈",
-      "Your positive energy is contagious, Rimi. Being around you is always uplifting. 🌟😄",
-      "Rimi, your determination and resilience are truly admirable. You can conquer anything you set your mind to. 💪🌟",
-      "Your creativity knows no limits, Rimi. Your artistic talents are simply amazing. 🎨🌟",
-      "Rimi, your presence in a room brings joy and warmth. You have a special way of making people feel comfortable. 🌼😊",
-      "Your genuine and sincere nature is what makes you stand out, Rimi. You're a true gem. 💎✨"
+      "Please Click Me! You are amazing just the way you are. 🌟",
+      "Your smile is as radiant as sunshine and has the power to brighten anyone's day. 😊☀️",
+      "Your kindness and compassion make you a truly beautiful person. 🌸💖",
+      "Your intelligence and quick wit always leave me impressed. 🧠✨",
+      "Your sense of style is impeccable. You have a unique and captivating fashion sense. 👗🌟",
+      "You have a heart of gold, and your generosity knows no bounds. 💛🌈",
+      "Your positive energy is contagious. Being around you is always uplifting. 🌟😄",
+      "Your determination and resilience are truly admirable. You can conquer anything you set your mind to. 💪🌟",
+      "Your creativity knows no limits. Your artistic talents are simply amazing. 🎨🌟",
+      "Your presence in a room brings joy and warmth. You have a special way of making people feel comfortable. 🌼😊",
+      "Your genuine and sincere nature is what makes you stand out. You're a true gem. 💎✨",
+      "Every day with you is a blessing. Your positivity brightens my world. 🌈😇",
+      "The world is a better place with you in it. Your impact is immeasurable. 🌎💫",
+      "Your laughter is infectious, and it warms the hearts of everyone around you. 😄❤️",
+      "You have an incredible ability to make challenges look like stepping stones to success. 🚀🌟",
+      "Your humility and grace inspire those around you. You're a true role model. 🌸🌟",
+      "In the book of life, you're the most captivating chapter. Your story is truly inspiring. 📖✨"
     ];
-    const colors = ["#007bff", "#dc3545", "#28a745", "#ffc107", "#17a2b8", "#ff5733", "#4caf50", "#ff9800", "#673ab7"];
+    const colors = [
+      "#007bff", "#dc3545", "#28a745", "#ffc107", "#17a2b8",
+      "#ff5733", "#4caf50", "#ff9800", "#673ab7", "#ff69b4",
+      "#8a2be2", "#20b2aa", "#ff4500", "#008080", "#800000"
+    ];
+
     const button = document.getElementById("changeButton");
     const body = document.body;
     let clickCount = 0;
 
-    // Function to generate a random number between 1 and 1000
     function getRandomImageId() {
       return Math.floor(Math.random() * 1000) + 1;
     }
 
-    // Cache object for preloaded images (using image IDs as keys)
+    function lazyLoadImage(imageId) {
+      const imageUrl = `https://picsum.photos/id/${imageId}/600/900.jpg`;
+      const img = new Image();
+      img.src = imageUrl;
+      img.loading = 'lazy';
+      return img;
+    }
+
     const imageCache = {};
 
-    // Function to preload an image and add it to the cache
     function preloadImage(imageId) {
       if (!imageCache[imageId]) {
-        const imageUrl = `https://picsum.photos/id/${imageId}/400/600.jpg`;
-        const img = new Image();
-        img.src = imageUrl;
+        const img = lazyLoadImage(imageId);
         imageCache[imageId] = img;
       }
     }
 
-    // Initial preload of 2 unique images
-    for (let i = 0; i < 2; i++) {
-      const randomImageId = getRandomImageId();
-      preloadImage(randomImageId);
+    function setLoadingState(loading) {
+      body.classList.toggle('loading', loading);
     }
 
-    // Function to change button and body background
+    const imagePromises = [];
+    for (let i = 0; i < 2; i++) {
+      const randomImageId = getRandomImageId();
+      imagePromises.push(preloadImage(randomImageId));
+    }
+
+    setLoadingState(true);
+
+    Promise.all(imagePromises).then(() => {
+      setLoadingState(false);
+      changeBackground();
+    });
+
     function changeBackground() {
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       const randomImageId = getRandomImageId();
-      const randomImageUrl = `https://picsum.photos/id/${randomImageId}/400/600.jpg`;
+      const randomImageUrl = `https://picsum.photos/id/${randomImageId}/600/900.jpg`;
       const maxX = button.parentElement.clientWidth - button.offsetWidth;
       const maxY = button.parentElement.clientHeight - button.offsetHeight;
 
@@ -102,17 +131,13 @@
       button.style.top = randomY + "px";
       button.style.left = randomX + "px";
 
-      // Change the body background image
       body.style.backgroundImage = `url('${randomImageUrl}')`;
     }
 
-    // Initial change on page load
     changeBackground();
 
     button.addEventListener("click", function () {
       clickCount = (clickCount + 1) % buttonTexts.length;
-
-      // Change button and body background on button click
       changeBackground();
     });
   </script>
